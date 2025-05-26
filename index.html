@@ -1,63 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casio FC-100V Simulator</title>
-    <link rel="stylesheet" href="style.css">
+<title>Calculator</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="calculator">
-        <div class="display">
-            <input type="text" id="screen" value="0" disabled>
-        </div>
-        <div class="buttons">
-            <!-- Function Keys -->
-            <button>TVM</button>
-            <button>AMRT</button>
-            <button>SMPL</button>
-            <button>COST</button>
-            <button>SELL</button>
-            <button>MAR</button>
-            <button>SHIFT</button>
-            <button>MODE</button>
-
-            <!-- Top Row -->
-            <button>AC</button>
-            <button>C</button>
-            <button>%</button>
-            <button>M+</button>
-            <button>M-</button>
-            <button>MRC</button>
-            <button>GT</button>
-            <button>OFF</button>
-
-            <!-- Number Pad and Operators -->
-            <button>7</button>
-            <button>8</button>
-            <button>9</button>
-            <button>/</button>
-            <button>√</button> <!-- Square Root -->
-
-            <button>4</button>
-            <button>5</button>
-            <button>6</button>
-            <button>*</button>
-            <button>+/-</button> <!-- Sign Change -->
-
-            <button>1</button>
-            <button>2</button>
-            <button>3</button>
-            <button>-</button>
-            <button>=</button>
-
-            <button>0</button>
-            <button>.</button>
-            <button>00</button>
-            <button>+</button>
-            <!-- Equals button spans two columns, handled by CSS -->
-        </div>
+  <div class="calculator">
+    <div class="calculator-display" id="display">0</div>
+    <div class="calculator-buttons">
+      <!-- Row 1 -->
+      <button value="TVM">TVM</button>
+      <button value="AMRT">AMRT</button>
+      <button value="SMPL">SMPL</button>
+      <button value="COST">COST</button>
+      <button value="SELL">SELL</button>
+      <!-- Row 2 -->
+      <button value="MAR">MAR</button>
+      <button value="SHIFT">SHIFT</button>
+      <button value="MODE">MODE</button>
+      <button value="AC">AC</button>
+      <button value="C">C</button>
+      <!-- Row 3 -->
+      <button value="%">%</button>
+      <button value="M+">M+</button>
+      <button value="M-">M-</button>
+      <button value="MRC">MRC</button>
+      <button value="GT">GT</button>
+      <!-- Row 4 -->
+      <button value="OFF">OFF</button>
+      <button value="7">7</button>
+      <button value="8">8</button>
+      <button value="9">9</button>
+      <button value="/">/</button>
+      <!-- Row 5 -->
+      <button value="sqrt">√</button>
+      <button value="4">4</button>
+      <button value="5">5</button>
+      <button value="6">6</button>
+      <button value="*">*</button>
+      <!-- Row 6 -->
+      <button value="toggle-sign">+/-</button>
+      <button value="1">1</button>
+      <button value="2">2</button>
+      <button value="3">3</button>
+      <button value="-">-</button>
+      <!-- Row 7 -->
+      <button value="=">=</button>
+      <button value="0">0</button>
+      <button value=".">.</button>
+      <button value="00">00</button>
+      <button value="+">+</button>
     </div>
-    <script src="script.js" defer></script>
+
+    <!-- TVM Modal -->
+    <div id="tvm-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close-button" id="tvm-close-button">&times;</span>
+        <h2>Time Value of Money (FV)</h2>
+        <label for="tvm-pv">Present Value (PV):</label>
+        <input type="number" id="tvm-pv" name="pv"><br><br>
+        <label for="tvm-rate">Interest Rate (r, annual %):</label>
+        <input type="number" id="tvm-rate" name="rate"><br><br>
+        <label for="tvm-periods">Compounding Periods per Year (n):</label>
+        <input type="number" id="tvm-periods" name="periods"><br><br>
+        <label for="tvm-time">Time in Years (t):</label>
+        <input type="number" id="tvm-time" name="time"><br><br>
+        <button id="tvm-calculate-button">Calculate FV</button>
+      </div>
+    </div>
+    <!-- End TVM Modal -->
+
+    <!-- AMRT Modal -->
+    <div id="amrt-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close-button" id="amrt-close-button">&times;</span>
+        <h2>Amortization (Loan Payment)</h2>
+        <label for="amrt-principal">Principal (P):</label>
+        <input type="number" id="amrt-principal" name="principal"><br><br>
+        <label for="amrt-rate">Monthly Interest Rate (r, decimal e.g., 0.005 for 0.5%):</label>
+        <input type="number" id="amrt-rate" name="rate" step="0.0001"><br><br>
+        <label for="amrt-payments">Total Number of Payments (n):</label>
+        <input type="number" id="amrt-payments" name="payments"><br><br>
+        <button id="amrt-calculate-button">Calculate Payment</button>
+      </div>
+    </div>
+    <!-- End AMRT Modal -->
+
+    <!-- SMPL Modal -->
+    <div id="smpl-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close-button" id="smpl-close-button">&times;</span>
+        <h2>Simple Interest</h2>
+        <label for="smpl-principal">Principal (P):</label>
+        <input type="number" id="smpl-principal" name="principal"><br><br>
+        <label for="smpl-rate">Annual Interest Rate (r, % e.g., 5 for 5%):</label>
+        <input type="number" id="smpl-rate" name="rate"><br><br>
+        <label for="smpl-time">Time in Years (t):</label>
+        <input type="number" id="smpl-time" name="time"><br><br>
+        <button id="smpl-calculate-button">Calculate Interest</button>
+      </div>
+    </div>
+    <!-- End SMPL Modal -->
+
+    <!-- CSM Modal -->
+    <div id="csm-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close-button" id="csm-close-button">&times;</span>
+        <h2>Cost, Sell, Margin</h2>
+        <label for="csm-cost">Cost (COST):</label>
+        <input type="number" id="csm-cost" name="cost" placeholder="Enter value or leave blank to calculate"><br><br>
+        <label for="csm-sell">Selling Price (SELL):</label>
+        <input type="number" id="csm-sell" name="sell" placeholder="Enter value or leave blank to calculate"><br><br>
+        <label for="csm-mar">Margin (MAR %):</label>
+        <input type="number" id="csm-mar" name="mar" placeholder="Enter value or leave blank to calculate"><br><br>
+        <button id="csm-calculate-button">Calculate</button>
+        <p id="csm-error" style="color: red; min-height: 1em; margin-top: 10px;"></p>
+      </div>
+    </div>
+    <!-- End CSM Modal -->
+
+  </div>
+<script src="script.js" defer></script>
 </body>
 </html>
