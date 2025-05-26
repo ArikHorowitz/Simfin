@@ -7,45 +7,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // const clearButton = document.getElementById('clear');
     // const allClearButton = document.getElementById('all-clear');
 
-    // Using getButtonByText for now as HTML doesn't have specific IDs for all buttons yet
-    const buttons = Array.from(document.querySelectorAll('.buttons button'));
-
-    function getButtonByText(text) {
-        return buttons.find(button => button.textContent.trim() === text);
-    }
-
-    // --- Get DOM Elements (using the text content for now) ---
-    // Display element is already 'display'
+    // --- Get DOM Elements by ID ---
+    // Display element
+    // const display = document.getElementById('screen'); // Already defined at the top
 
     // Number buttons (0-9, ., 00)
-    const btn0 = getButtonByText('0');
-    const btn1 = getButtonByText('1');
-    const btn2 = getButtonByText('2');
-    const btn3 = getButtonByText('3');
-    const btn4 = getButtonByText('4');
-    const btn5 = getButtonByText('5');
-    const btn6 = getButtonByText('6');
-    const btn7 = getButtonByText('7');
-    const btn8 = getButtonByText('8');
-    const btn9 = getButtonByText('9');
-    const btnDot = getButtonByText('.');
-    const btn00 = getButtonByText('00');
+    const btn0 = document.getElementById('btn-0');
+    const btn1 = document.getElementById('btn-1');
+    const btn2 = document.getElementById('btn-2');
+    const btn3 = document.getElementById('btn-3');
+    const btn4 = document.getElementById('btn-4');
+    const btn5 = document.getElementById('btn-5');
+    const btn6 = document.getElementById('btn-6');
+    const btn7 = document.getElementById('btn-7');
+    const btn8 = document.getElementById('btn-8');
+    const btn9 = document.getElementById('btn-9');
+    const btnDot = document.getElementById('btn-dot');
+    const btn00 = document.getElementById('btn-00');
 
     const actualNumberButtons = [btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btnDot, btn00].filter(Boolean);
 
     // Operator buttons (+, -, *, /)
-    const btnPlus = getButtonByText('+');
-    const btnMinus = getButtonByText('-');
-    const btnMultiply = getButtonByText('*');
-    const btnDivide = getButtonByText('/');
+    const btnPlus = document.getElementById('btn-plus');
+    const btnMinus = document.getElementById('btn-minus');
+    const btnMultiply = document.getElementById('btn-multiply');
+    const btnDivide = document.getElementById('btn-divide');
     const actualOperatorButtons = [btnPlus, btnMinus, btnMultiply, btnDivide].filter(Boolean);
 
     // Equals button (=)
-    const actualEqualsButton = getButtonByText('=');
+    const actualEqualsButton = document.getElementById('btn-equals');
 
     // Clear (C) and All Clear (AC) buttons
-    const actualClearButton = getButtonByText('C');
-    const actualAllClearButton = getButtonByText('AC');
+    const actualClearButton = document.getElementById('btn-c');
+    const actualAllClearButton = document.getElementById('btn-ac');
+    const btnPercent = document.getElementById('btn-percent');
 
     // --- State Variables ---
     let currentInput = '0';
@@ -209,4 +204,135 @@ document.addEventListener('DOMContentLoaded', () => {
         shouldResetDisplay = false;
         updateDisplay();
     }
+
+    // --- Implement Percentage (%) ---
+    if (btnPercent) {
+        btnPercent.addEventListener('click', () => {
+            if (currentInput === 'Error') return;
+
+            const currentValue = parseFloat(currentInput);
+            if (isNaN(currentValue)) return;
+
+            let result;
+            if (operator !== null && firstOperand !== null && !shouldResetDisplay) {
+                // Case: part of an operation like 100 * 5%
+                // Here, currentValue is the second operand for the percentage calculation
+                // The percentage is applied to firstOperand based on currentValue
+                // e.g. 100 + 5% (of 100) means 100 + (100 * 5 / 100) = 100 + 5 = 105
+                // e.g. 100 * 5% (of 100) means 100 * (5 / 100) = 100 * 0.05 = 5
+                // The problem statement implies (firstOperand * currentValue) / 100 which is firstOperand * (currentValue/100)
+                // This is consistent with Casio behavior for A * B % = (A*B)/100
+                result = (firstOperand * currentValue) / 100;
+
+            } else {
+                // Case: standalone percentage like 5%
+                // This means currentValue / 100
+                result = currentValue / 100;
+            }
+            
+            currentInput = result.toString();
+            // After % is pressed, the result is displayed. 
+            // It typically finalizes this part of the calculation.
+            // For example, 100 + 5 % results in 5 (5% of 100). Then if you press =, it should perform 100 + 5.
+            // This behavior can be complex. For now, let's assume % completes the immediate percentage operation
+            // and the result becomes the new currentInput.
+            // The subtask states: "operator and firstOperand should be reset ... if the percentage was applied directly"
+            // "If it was part of an operation... for now, let's assume it finalizes the segment, so operator and firstOperand are cleared"
+            
+            // If it was part of a calculation like 100 * 5 %, the result (5) is now in currentInput.
+            // This result (5) should become the new firstOperand if a new operator is pressed,
+            // or it's the final result if '=' is pressed (or another number is typed).
+            // The current interpretation based on subtask instructions is that it finalizes this segment.
+            // For simplicity, as per subtask: clear operator and firstOperand.
+            firstOperand = null; 
+            operator = null; 
+            shouldResetDisplay = true; // Next number input should clear display.
+            updateDisplay();
+        });
+    }
+
+    // --- Implement Square Root (√) ---
+    const btnSqrt = document.getElementById('btn-sqrt');
+    if (btnSqrt) {
+        btnSqrt.addEventListener('click', () => {
+            if (currentInput === 'Error') return;
+
+            const currentValue = parseFloat(currentInput);
+            if (isNaN(currentValue)) { // Should not happen if input is controlled, but good check
+                currentInput = 'Error';
+                operator = null;
+                firstOperand = null;
+                shouldResetDisplay = true;
+                updateDisplay();
+                return;
+            }
+
+            if (currentValue < 0) {
+                currentInput = 'Error';
+                operator = null;
+                firstOperand = null;
+            } else {
+                const result = Math.sqrt(currentValue);
+                currentInput = result.toString();
+            }
+            
+            shouldResetDisplay = true;
+            updateDisplay();
+        });
+    }
+
+    // --- Implement Sign Change (+/-) ---
+    const btnSign = document.getElementById('btn-sign');
+    if (btnSign) {
+        btnSign.addEventListener('click', () => {
+            if (currentInput === 'Error' || currentInput === '') return;
+
+            const currentValue = parseFloat(currentInput);
+            if (isNaN(currentValue)) { // Should not happen if input is controlled
+                return; 
+            }
+
+            if (currentValue === 0) {
+                // Ensure currentInput remains "0", not "-0"
+                currentInput = "0";
+            } else {
+                currentInput = (currentValue * -1).toString();
+            }
+            
+            // shouldResetDisplay remains as it was. 
+            // If a number was being typed, it's still being typed.
+            // If a result was displayed, it's now negated, and next number will clear it if shouldResetDisplay was true.
+            // The subtask states: "shouldResetDisplay should generally remain false..."
+            // For simplicity, let's assume it does not change shouldResetDisplay's state.
+            updateDisplay();
+        });
+    }
 });
+
+// --- Manual Test Cases ---
+
+// Percentage (%):
+// 1. Basic percentage of a number: 200 % => Expected: 2
+// 2. Percentage in an addition: 100 + 10 % => Expected: 110 (10% of 100 is 10, 100+10 = 110)
+// 3. Percentage in a subtraction: 100 - 5 % => Expected: 95 (5% of 100 is 5, 100-5 = 95)
+// 4. Percentage in a multiplication: 50 * 20 % => Expected: 10 (50 * 0.20 = 10)
+// 5. Percentage in a division: 200 / 50 % => Expected: 400 (200 / 0.5 = 400)
+// 6. Chained percentage: 100 + 10 % + 10 % => Expected: 121 (110 + 10% of 110 = 121)
+// 7. Zero value: 0 % => Expected: 0
+// 8. Percentage of zero: 100 * 0 % => Expected: 0
+
+// Square Root (√):
+// 1. Perfect square: 9 √ => Expected: 3
+// 2. Non-perfect square: 2 √ => Expected: 1.41421356...
+// 3. Zero: 0 √ => Expected: 0
+// 4. Negative number: -4 √ => Expected: Error
+// 5. Result of an operation: 5 + 4 = √ => Expected: 3
+// 6. Square root then operation: 9 √ + 1 = => Expected: 4
+
+// Sign Change (+/-):
+// 1. Positive to negative: 5 +/- => Expected: -5
+// 2. Negative to positive: -23 +/- => Expected: 23
+// 3. Zero: 0 +/- => Expected: 0
+// 4. After an operation: 10 - 4 = +/- => Expected: -6
+// 5. Before an operation: 5 +/- * 2 = => Expected: -10
+// 6. Multiple times: 7 +/- +/- +/- => Expected: -7
