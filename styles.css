@@ -1,0 +1,191 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+  margin: 0; /* Reset default margin */
+}
+
+.calculator {
+  width: 320px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  background-color: darkgray;
+  padding: 20px;
+  position: relative; /* For modal positioning if needed, or for future elements */
+}
+
+.calculator-display {
+  width: 100%;
+  height: 60px;
+  background-color: #D9E9D1; /* lightgreen alternative */
+  color: black;
+  text-align: right;
+  font-size: 2em;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.calculator-buttons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+button {
+  height: 50px;
+  font-size: 1.2em;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  cursor: pointer;
+  /* background-color: gray; Default background, will be overridden */
+  /* color: black; Default for function buttons, will be overridden */
+}
+
+/* Default for function buttons (most of them) */
+button {
+    background-color: #dcdcdc; /* gainsboro - a light gray for functions */
+    color: black;
+}
+
+/* Number buttons & decimal - distinct background and white text */
+button[value="0"], button[value="1"], button[value="2"], button[value="3"], button[value="4"],
+button[value="5"], button[value="6"], button[value="7"], button[value="8"], button[value="9"],
+button[value="."], button[value="00"] {
+  background-color: #696969; /* dimgray */
+  color: white;
+}
+
+/* Specific function buttons from the list */
+button[value="AC"] {
+  background-color: red;
+  color: white;
+}
+
+button[value="C"] {
+  background-color: orange; 
+  color: white;
+}
+
+button[value="SHIFT"] {
+  background-color: orange; 
+  color: white;
+}
+
+button[value="="] {
+  background-color: blue; 
+  color: white;
+}
+
+/* Operators */
+button[value="+"], button[value="-"], button[value="*"], button[value="/"],
+button[value="%"], button[value="sqrt"], button[value="toggle-sign"] {
+  background-color: #c0c0c0; /* silver - slightly different from default functions */
+  color: black;
+}
+
+/* Other financial/special functions */
+button[value="TVM"], button[value="AMRT"], button[value="SMPL"], button[value="COST"],
+button[value="SELL"], button[value="MAR"], button[value="MODE"],
+button[value="M+"], button[value="M-"], button[value="MRC"], button[value="GT"],
+button[value="OFF"] {
+  background-color: #dcdcdc; /* Default function button color */
+  color: black;
+}
+
+/* Ensure specific overrides for TVM, AC, C, SHIFT, = take precedence if they fall into other categories. */
+/* The order of CSS rules matters; specific overrides should come last or have higher specificity. */
+/* Re-applying most specific ones */
+button[value="AC"] { background-color: red; color: white; }
+button[value="C"] { background-color: orange; color: white; }
+button[value="SHIFT"] { background-color: orange; color: white; } /* Prompt used orange, previously #ffaa00 */
+button[value="="] { background-color: blue; color: white; }
+button[value="TVM"] { background-color: #5cb85c; color: white; } 
+button[value="AMRT"] { background-color: #f0ad4e; color: white; } 
+button[value="SMPL"] { background-color: #5bc0de; color: white; } 
+button[value="COST"] { background-color: #d9534f; color: white; } /* Example: Danger Red for COST */
+button[value="SELL"] { background-color: #428bca; color: white; } /* Example: Primary Blue for SELL */
+button[value="MAR"] { background-color: #5cb85c; color: white; } /* Example: Success Green for MAR (can reuse if desired) */
+
+
+/* Modal Styles (applies to TVM, AMRT, SMPL, CSM Modals) */
+.modal {
+  position: fixed; /* Cover the whole viewport */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5); /* Semi-transparent background */
+  display: flex; /* Used to center modal-content */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's on top of other content */
+  /* Initially hidden, will be shown by JS */
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px; /* Fixed width for the modal box */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  color: black; /* Ensure text inside modal is visible */
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.modal-content label {
+  display: block; /* Makes each label take its own line */
+  margin-bottom: 5px; /* Space below label */
+  font-size: 0.9em;
+}
+
+.modal-content input[type="number"] {
+  width: calc(100% - 12px); /* Full width minus padding */
+  padding: 5px;
+  margin-bottom: 10px; /* Space below input field */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Style for the Calculate button inside the modal */
+.modal-content button {
+   background-color: #4CAF50; /* Green */
+   color: white;
+   padding: 10px 15px;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   display: block; /* Make it a block to allow margin auto */
+   margin: 10px auto 0; /* Center the button */
+   font-size: 1em; /* Reset font size if needed */
+   height: auto; /* Reset height if needed */
+}
+
+.close-button {
+  float: right;
+  font-size: 1.5em;
+  line-height: 1;
+  cursor: pointer;
+  color: #aaa; /* Light gray for the 'x' */
+}
+.close-button:hover {
+  color: black; /* Darker on hover */
+}
+
+/* Style for active SHIFT button */
+button[value="SHIFT"].shift-active {
+  background-color: #ffc107; /* Brighter orange */
+  box-shadow: 0 0 8px #ffc107; /* Glow effect */
+  color: black; /* Ensure text is still visible */
+}

@@ -1,0 +1,204 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #e0e0e0; /* Lighter background for the page */
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.calculator {
+    width: 340px; /* Slightly wider to accommodate padding/margins */
+    border: 1px solid #1a1a1a;
+    border-radius: 10px;
+    background-color: #3a3a3a; /* Dark grey body, like Casio plastic */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0px rgba(255, 255, 255, 0.1);
+    padding: 20px;
+}
+
+.display {
+    height: 80px; /* Increased height for a 4-line feel */
+    border: 1px solid #444;
+    background-color: #c8d0c0; /* Light greenish-gray LCD background */
+    margin-bottom: 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 5px 10px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.display input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: transparent;
+    text-align: right;
+    font-size: 2.2em; /* Adjust as needed */
+    font-family: 'Consolas', 'Lucida Console', monospace; /* Monospaced for calculator feel */
+    color: #202020; /* Dark text */
+    box-sizing: border-box;
+    letter-spacing: 1px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px; /* Reduced gap for tighter button packing */
+}
+
+.buttons button {
+    padding: 12px 5px; /* Adjusted padding */
+    border: 1px solid #202020;
+    border-bottom: 2px solid #101010; /* 3D effect for keys */
+    border-radius: 5px; /* More rounded corners */
+    background-color: #d8d8d8; /* Default light gray for keys */
+    font-size: 1.0em; /* Adjusted font size */
+    font-weight: bold;
+    color: #101010;
+    cursor: pointer;
+    transition: background-color 0.1s, box-shadow 0.1s, transform 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.buttons button:hover {
+    background-color: #c0c0c0;
+}
+
+.buttons button:active {
+    background-color: #b0b0b0; /* Darker on press */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3); /* Inset shadow for pressed feel */
+    transform: translateY(1px); /* Slight press down effect */
+    border-bottom-width: 1px;
+}
+
+/* --- Specific Button Styling using nth-child --- */
+/* This is fragile. Adding classes to HTML buttons is recommended for robustness. */
+
+/* Row 1: Function Keys (TVM to MODE) - typically medium grey or same as standard */
+/* TVM, AMRT, SMPL, COST, SELL, MAR */
+.buttons button:nth-child(-n+6) {
+    background-color: #b0b0b8; /* Slightly darker grey for function keys */
+    color: #101010;
+}
+.buttons button:nth-child(-n+6):active {
+    background-color: #a0a0a8;
+}
+
+
+/* SHIFT key (7th button) - Orange/Gold */
+.buttons button:nth-child(7) {
+    background-color: #ff9800; /* Orange */
+    color: white;
+    border-color: #c67600;
+    border-bottom-color: #a06000;
+}
+.buttons button:nth-child(7):active {
+    background-color: #e68900;
+}
+
+/* MODE key (8th button) - Often similar to SHIFT or another distinct color */
+.buttons button:nth-child(8) {
+    background-color: #607d8b; /* Blue Grey */
+    color: white;
+    border-color: #4a616d;
+    border-bottom-color: #384a53;
+}
+.buttons button:nth-child(8):active {
+    background-color: #546e7a;
+}
+
+/* Row 2: AC, C, %, M+, M-, MRC, GT, OFF */
+/* AC key (9th button) - Red */
+.buttons button:nth-child(9) {
+    background-color: #f44336; /* Red */
+    color: white;
+    border-color: #d32f2f;
+    border-bottom-color: #b71c1c;
+}
+.buttons button:nth-child(9):active {
+    background-color: #e53935;
+}
+
+/* C key (10th button) - Often similar to AC or slightly less prominent */
+.buttons button:nth-child(10) {
+    background-color: #ff5722; /* Deep Orange (distinct from AC) */
+    color: white;
+    border-color: #e64a19;
+    border-bottom-color: #c03c13;
+}
+.buttons button:nth-child(10):active {
+    background-color: #f05020;
+}
+
+/* OFF key (16th button) - Dark Grey / Black */
+.buttons button:nth-child(16) {
+    background-color: #424242;
+    color: white;
+    border-color: #303030;
+    border-bottom-color: #202020;
+}
+.buttons button:nth-child(16):active {
+    background-color: #353535;
+}
+
+
+/* Number Pad and Operators have default styling: #d8d8d8 */
+/* Buttons: 7, 8, 9, /, √ (17th to 21st) */
+/* Buttons: 4, 5, 6, *, +/- (22nd to 26th) */
+/* Buttons: 1, 2, 3, -, = (27th to 31st) */
+/* Buttons: 0, ., 00, + (32nd to 35th) */
+
+
+/* Equals button (=) (31st button in current HTML) - Often Blue */
+.buttons button:nth-child(31) {
+    grid-column: span 2; /* Make equals button span 2 columns */
+    background-color: #2196f3; /* Blue */
+    color: white;
+    border-color: #1976d2;
+    border-bottom-color: #135ca0;
+}
+.buttons button:nth-child(31):active {
+    background-color: #1e88e5;
+}
+
+/* Styling for other specific operator/memory keys if needed */
+/* Example: M+, M-, MRC, GT, % could be a slightly different grey */
+.buttons button:nth-child(11), /* % */
+.buttons button:nth-child(12), /* M+ */
+.buttons button:nth-child(13), /* M- */
+.buttons button:nth-child(14), /* MRC */
+.buttons button:nth-child(15) { /* GT */
+    background-color: #c8c8d0;
+    color: #101010;
+}
+.buttons button:nth-child(11):active,
+.buttons button:nth-child(12):active,
+.buttons button:nth-child(13):active,
+.buttons button:nth-child(14):active,
+.buttons button:nth-child(15):active {
+    background-color: #b8b8c0;
+}
+
+/* Ensure square root and sign change also get default or specific styling */
+/* √ (21st button) */
+/* +/- (26th button) */
+/* These will use the default light gray unless overridden. */
+
+/* Make sure button text is not too large for smaller buttons */
+.buttons button {
+    font-size: 0.95em; /* Global adjustment for button text */
+    padding: 10px 5px; /* Fine-tune padding */
+}
+
+/* Specific adjustments for small text buttons if needed */
+.buttons button:nth-child(1), /* TVM */
+.buttons button:nth-child(2), /* AMRT */
+.buttons button:nth-child(3) { /* SMPL */
+    font-size: 0.85em; /* Smaller font for longer text */
+}
